@@ -16,9 +16,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         
         userBuilder
             .Property(u => u.Id)
-            .ValueGeneratedOnAdd();userBuilder
+            .ValueGeneratedOnAdd();
+        userBuilder
             .Property(u => u.Email)
             .HasMaxLength(DatabaseConstants.EMAIL_MAX_LENGTH);
+        
+        userBuilder
+            .HasIndex(u => u.Email)
+            .IsUnique();
         
         userBuilder
             .Property(u => u.PasswordHash)

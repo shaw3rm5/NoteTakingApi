@@ -24,6 +24,10 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
             .IsUnique();
 
         builder
+            .HasIndex(t => t.Name)
+            .IsUnique();
+        
+        builder
             .HasMany(t => t.NoteTags)
             .WithOne(nt => nt.Tag)
             .HasForeignKey(nt => nt.TagId);
