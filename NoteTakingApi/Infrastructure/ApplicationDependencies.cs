@@ -1,6 +1,7 @@
 using System.Text;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NoteTakingApi.Common.Models;
@@ -40,6 +41,8 @@ public static class ApplicationDependencies
             .CreateLogger();
         services.AddSerilog(Log.Logger);
      
+        services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+        
         services.AddValidatorsFromAssembly(typeof(RegisterCommandValidator).Assembly);
 
     }

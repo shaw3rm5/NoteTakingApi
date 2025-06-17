@@ -12,8 +12,8 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(x => x.Email)
             .NotNull().NotEmpty().Matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
         RuleFor(x => x.Password)
-            .NotNull().NotEmpty().Matches("^[^@\\s]+$").Length(1, 300);
+            .NotNull().NotEmpty().Length(8, 300);
         RuleFor(x => x.FullName)
-            .NotNull().NotEmpty().Matches("^[^@\\s]+$").Length(1, 30);
+            .NotNull().NotEmpty().Length(5, 30);
     }
 }

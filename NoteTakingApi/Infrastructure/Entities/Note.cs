@@ -11,7 +11,7 @@ public class Note
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
 
-    public ICollection<NoteTag> NoteTags { get; private set; }
+    public ICollection<NoteTag> NoteTags { get; set; }
 
     public Note() { }
 
@@ -24,6 +24,7 @@ public class Note
             Content = content,
             IsDeleted = false,
             CreatedAt = DateTimeOffset.UtcNow,
+            NoteTags = new List<NoteTag>()
         };
     }
 
