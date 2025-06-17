@@ -12,6 +12,8 @@ public class User
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
 
+    public ICollection<Note> Notes {get; set; }
+
     public User() { }
 
     public User Register(string email, string password, string fullName, IPasswordHasher<User> passwordHasher)

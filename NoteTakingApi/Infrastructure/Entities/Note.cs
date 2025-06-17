@@ -7,13 +7,13 @@ public class Note
     public string Title { get; private set; }
     public string Content { get; private set; }
     public bool IsDeleted { get; private set; }
+    public User User { get; set; }
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
-    public ICollection<Tag> Tags { get; set; }
-    
-    public Note()
-    {
-    }
+
+    public ICollection<NoteTag> NoteTags { get; private set; }
+
+    public Note() { }
 
     public static Note Create(int userId, string title, string content)
     {

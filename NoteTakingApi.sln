@@ -2,9 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoteTakingApi", "NoteTakingApi\NoteTakingApi.csproj", "{C0595C0B-27E6-46F7-9442-0484EE5F7D68}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{313D5CE9-2CAA-43A9-B0DB-BEBF427FBCC7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{43EC24FC-97BD-498B-BF26-CE2499F2BB34}"
 	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
+		compose.yaml = compose.yaml
 	EndProjectSection
 EndProject
 Global
