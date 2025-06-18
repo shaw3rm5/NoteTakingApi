@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using NoteTakingApi.Common.Exceptions;
 using NoteTakingApi.Infrastructure.Database;
 
 namespace NoteTakingApi.Features.Notes;
@@ -30,8 +31,7 @@ public class GetNoteById
                 .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId && !n.IsDeleted, cancellationToken);
 
             if (note is null)
-                return Results.NotFound();
-                // todo custom exceptions
+                throw new NoteNotFindException(ErrorCodes.NotFound, $"note with id {id} not found");
             
             var result = new Response(
                 note.Id,

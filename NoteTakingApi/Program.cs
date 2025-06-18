@@ -3,6 +3,7 @@ using NoteTakingApi.Features.Auth;
 using NoteTakingApi.Features.Notes;
 using NoteTakingApi.Features.Tags;
 using NoteTakingApi.Infrastructure;
+using NoteTakingApi.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ builder.Services.AddApplicationDependencies(builder.Configuration);
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "NoteTaking API", Version = "v1" });
@@ -58,5 +60,10 @@ GetNotes.Endpoint.Map(app);
 UpdateNote.Endpoint.Map(app);
 DeleteNote.Endpoint.Map(app);
 GetTags.Endpoint.Map(app);
+
+app.MapHealthChecks("/health");
+
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.Run();

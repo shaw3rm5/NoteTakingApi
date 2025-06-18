@@ -1,5 +1,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using NoteTakingApi.Common.Exceptions;
 using NoteTakingApi.Common.Models;
 using NoteTakingApi.Infrastructure.Database;
 using NoteTakingApi.Infrastructure.Services;
@@ -21,12 +23,17 @@ public class Registration
             ILogger<Registration> logger,
             CancellationToken cancellationToken)
         {
-            logger.LogCritical("User with email {Email} registered", command.Email);
             await validator.ValidateAndThrowAsync(command, cancellationToken);
+            
+            var existingUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == command.Email, cancellationToken);
+
+            if (existingUser is not null)
+                throw new UserAlreadyExistsException(ErrorCodes.Conflict, $"User with email {command.Email} already exists.");
             
             var user = new User().Register(command.Email, command.Password, command.FullName, new PasswordHasher<User>());
             dbContext.Users.Add(user);
             await dbContext.SaveChangesAsync(cancellationToken);
+            
             return Results.Created("user", new
             {
                 user.Id,

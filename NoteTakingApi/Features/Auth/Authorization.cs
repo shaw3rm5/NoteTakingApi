@@ -26,8 +26,9 @@ public class Authorization
         {
             var user = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == command.Email, cancellationToken);
 
-            if (user is null || user.VerifyPassword(command.Password, user.PasswordHash, passwordHasher))
+            if (user is null || !user.VerifyPassword(command.Password, user.PasswordHash, passwordHasher))
             {
+                var a = user.VerifyPassword(command.Password, user.PasswordHash, passwordHasher);
                 return Results.Unauthorized();
                 // todo custom exceptions
             }

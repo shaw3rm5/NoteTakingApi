@@ -4,6 +4,7 @@ using NoteTakingApi.Common.Models;
 using NoteTakingApi.Infrastructure.Database;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using NoteTakingApi.Common.Exceptions;
 using NoteTakingApi.Infrastructure.Services;
 
 namespace NoteTakingApi.Features.Auth;
@@ -29,8 +30,7 @@ public class Refresh
 
             var existingUser = await dbContext.Users.FindAsync([userId], cancellationToken);
             if (existingUser is null)
-                return Results.Unauthorized();
-            //todo custom exception
+                throw new NotAuthorizedException(ErrorCodes.Unauthorized, "User not found");
             var token = jwtService.GenerateToken(existingUser.Id, existingUser.Email);
 
             return Results.Ok(new

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using NoteTakingApi.Common.Exceptions;
 using NoteTakingApi.Common.Models;
 using NoteTakingApi.Infrastructure.Database;
 using NoteTakingApi.Infrastructure.Entities;
@@ -36,29 +37,36 @@ public class UpdateNote
                 .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId && !n.IsDeleted, cancellationToken);
 
             if (note is null)
-                return Results.NotFound();
+                throw new NoteNotFindException(ErrorCodes.NotFound, $"note with id {id} not found");
 
             note.Update(command.Title, command.Content);
-
-            dbContext.NoteTags.RemoveRange(note.NoteTags);
 
             var existingTags = await dbContext.Tags
                 .Where(t => command.Tags.Contains(t.Name))
                 .ToListAsync(cancellationToken);
 
-            var newTagNames = command.Tags.Except(existingTags.Select(t => t.Name)).Distinct();
-            var newTags = newTagNames.Select(name => new Tag { Name = name }).ToList();
+            var existingTagNames = existingTags.Select(t => t.Name).ToList();
 
-            dbContext.Tags.AddRange(newTags);
-            await dbContext.SaveChangesAsync(cancellationToken); 
+            var newTags = command.Tags
+                .Where(name => !existingTagNames.Contains(name))
+                .Distinct()
+                .Select(name => new Tag { Name = name })
+                .ToList();
 
+            if (newTags.Any())
+                dbContext.Tags.AddRange(newTags);
             var allTags = existingTags.Concat(newTags).ToList();
 
-            note.NoteTags = allTags.Select(tag => new NoteTag
+            note.NoteTags.Clear();
+
+            foreach (var tag in allTags)
             {
-                NoteId = note.Id,
-                TagId = tag.Id
-            }).ToList();
+                note.NoteTags.Add(new NoteTag
+                {
+                    Note = note,
+                    Tag = tag
+                });
+            }
 
             await dbContext.SaveChangesAsync(cancellationToken);
 

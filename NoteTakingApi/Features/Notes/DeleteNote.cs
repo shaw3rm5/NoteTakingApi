@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using NoteTakingApi.Common.Exceptions;
 using NoteTakingApi.Infrastructure.Database;
 
 namespace NoteTakingApi.Features.Notes;
@@ -27,7 +28,7 @@ public class DeleteNote
                 .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId && !n.IsDeleted, ct);
 
             if (note is null)
-                return Results.NotFound();
+                throw new NoteNotFindException(ErrorCodes.NotFound, $"note with id {id} not found");
 
             note.Delete();
 

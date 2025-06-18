@@ -28,17 +28,27 @@ public class CreateNote
             await validator.ValidateAndThrowAsync(request, cancellationToken);
             
             var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
+            
             var note = Note.Create(userId, request.Title, request.Content);
 
             var existingTags = await dbContext.Tags
+                .AsNoTracking()
                 .Where(t => request.Tags.Contains(t.Name))
                 .ToListAsync(cancellationToken);
 
-            var newTagNames = request.Tags.Except(existingTags.Select(t => t.Name)).Distinct();
+            var existingTagNames = existingTags.Select(t => t.Name).ToHashSet();
 
-            var newTags = newTagNames.Select(name => new Tag { Name = name }).ToList();
+            var newTags = request.Tags
+                .Where(name => !existingTagNames.Contains(name))
+                .Distinct()
+                .Select(name => new Tag { Name = name })
+                .ToList();
 
+            foreach (var tag in newTags)
+            {
+                tag.Id = default;
+            }
+            
             dbContext.Tags.AddRange(newTags);
             await dbContext.SaveChangesAsync(cancellationToken); 
             
