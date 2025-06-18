@@ -13,7 +13,10 @@ public class GetNoteById
         {
             app.MapGet("/notes/{id:int}", Handle)
                 .RequireAuthorization()
-                .WithTags("Notes");
+                .WithTags("Notes")
+                .Produces<GetByIdResponse>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound)
+                .Produces(StatusCodes.Status401Unauthorized);
         }
 
         private static async Task<IResult> Handle(
@@ -33,7 +36,7 @@ public class GetNoteById
             if (note is null)
                 throw new NoteNotFindException(ErrorCodes.NotFound, $"note with id {id} not found");
             
-            var result = new Response(
+            var result = new GetByIdResponse(
                 note.Id,
                 note.Title,
                 note.Content,
@@ -45,5 +48,5 @@ public class GetNoteById
             return Results.Ok(result);
         }
     }
-    private record Response(int Id, string Title, string Content, List<string> Tags, DateTimeOffset CreatedAt, DateTimeOffset UpdatedAt);
+    private record GetByIdResponse(int Id, string Title, string Content, List<string> Tags, DateTimeOffset CreatedAt, DateTimeOffset UpdatedAt);
 }

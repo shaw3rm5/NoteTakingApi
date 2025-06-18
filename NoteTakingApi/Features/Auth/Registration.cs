@@ -14,7 +14,9 @@ public class Registration
     {
         public static void Map(IEndpointRouteBuilder app) =>
             app.MapPost("/auth/register", Handle)
-                .WithTags("Auth");
+                .WithTags("Auth")
+                .Produces(StatusCodes.Status201Created, typeof(RegistrationResponse))
+                .Produces(StatusCodes.Status409Conflict);
 
         private static async Task<IResult> Handle(
             RegisterCommand command,
@@ -34,12 +36,8 @@ public class Registration
             dbContext.Users.Add(user);
             await dbContext.SaveChangesAsync(cancellationToken);
             
-            return Results.Created("user", new
-            {
-                user.Id,
-                user.Email,
-                user.FullName,
-            });
+            return Results.Created("user", new RegistrationResponse(user.Id, user.Email, user.FullName));
         }
     }
+    record RegistrationResponse(int Id, string Email, string FullName);
 }

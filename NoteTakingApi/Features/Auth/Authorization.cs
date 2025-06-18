@@ -14,7 +14,9 @@ public class Authorization
         {
             app.MapPost("/auth/login", Handler)
                 .WithTags("Auth")
-                .AllowAnonymous();
+                .AllowAnonymous()
+                .Produces<JwtAuthorizationResponse>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status401Unauthorized);
         }
 
         private static async Task<IResult> Handler(
@@ -34,10 +36,10 @@ public class Authorization
             }
 
             var token = jwtService.GenerateToken(user.Id, user.Email);
-            return Results.Ok(new
-            {
-                token
-            });
+            return Results.Ok(new JwtAuthorizationResponse(token));
+            
+        }
     }
-    }
+
+    record JwtAuthorizationResponse(string Token);
 }

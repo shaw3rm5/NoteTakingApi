@@ -16,7 +16,11 @@ public class UpdateNote
         {
             app.MapPut("/notes/{id:int}", Handle)
                 .RequireAuthorization()
-                .WithTags("Notes");
+                .WithTags("Notes")
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status401Unauthorized)
+                .Produces(StatusCodes.Status404NotFound);
         }
 
         private static async Task<IResult> Handle(

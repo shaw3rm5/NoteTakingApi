@@ -15,7 +15,10 @@ public class CreateNote
         {
             app.MapPost("/notes", Handle)
                 .RequireAuthorization()
-                .WithTags("Notes");
+                .WithTags("Notes")
+                .Produces<CreatedNoteResponse>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status401Unauthorized);
         }
 
         private static async Task<IResult> Handle(
@@ -66,7 +69,7 @@ public class CreateNote
             dbContext.Notes.Add(note);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return Results.Ok(new Response(
+            return Results.Ok(new CreatedNoteResponse(
                 note.Id,
                 note.Title,
                 note.Content,
@@ -77,4 +80,4 @@ public class CreateNote
     }
 }
 
-record Response(int Id, string Title, string Content, List<string> Tags, DateTimeOffset CreatedAt);
+record CreatedNoteResponse(int Id, string Title, string Content, List<string> Tags, DateTimeOffset CreatedAt);

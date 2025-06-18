@@ -12,7 +12,9 @@ public class GetTags
         {
             app.MapGet("/tags", Handle)
                 .RequireAuthorization()
-                .WithTags("Tags");
+                .WithTags("Tags")
+                .Produces(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status401Unauthorized);
         }
         
         private static async Task<IResult> Handle(

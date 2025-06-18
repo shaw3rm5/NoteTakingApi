@@ -17,7 +17,9 @@ public class Refresh
         {
             app.MapPost("/auth/refresh", Handle)
                 .RequireAuthorization()
-                .WithTags("Auth");
+                .WithTags("Auth")
+                .Produces<JwtRefreshResponse>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status401Unauthorized);
         }
 
         private static async Task<IResult> Handle(
@@ -39,4 +41,5 @@ public class Refresh
             });
         }
     }
+    record JwtRefreshResponse(string Token);
 }

@@ -13,7 +13,9 @@ public class GetNotes
         {
             app.MapGet("/notes", Handle)
                 .RequireAuthorization()
-                .WithTags("Notes");
+                .WithTags("Notes")
+                .Produces<ResponseNote[]>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status401Unauthorized);
         }
 
         private static async Task<IResult> Handle(

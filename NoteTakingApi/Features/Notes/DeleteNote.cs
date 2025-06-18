@@ -13,7 +13,10 @@ public class DeleteNote
         {
             app.MapDelete("/notes/{id:int}", Handle)
                 .RequireAuthorization()
-                .WithTags("Notes");
+                .WithTags("Notes")
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status404NotFound)
+                .Produces(StatusCodes.Status401Unauthorized);
         }
 
         private static async Task<IResult> Handle(

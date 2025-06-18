@@ -4,6 +4,7 @@ using NoteTakingApi.Features.Notes;
 using NoteTakingApi.Features.Tags;
 using NoteTakingApi.Infrastructure;
 using NoteTakingApi.Infrastructure.Middlewares;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,10 +47,15 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1"));
 app.UseHttpsRedirection();
 app.UseAuthentication(); 
 app.UseAuthorization();
+app.MapScalarApiReference(options =>
+    options.WithOpenApiRoutePattern("/swagger/v1/swagger.json")
+    .WithTheme(ScalarTheme.Mars)
+    .WithDarkMode()); 
 
 Registration.Endpoint.Map(app);
 Authorization.Endpoint.Map(app);
