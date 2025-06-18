@@ -32,7 +32,8 @@ public static class ApplicationDependencies
                     ValidIssuer = configuration["JwtSettings:Issuer"],
                     ValidAudience = configuration["JwtSettings:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!))
+                        Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!)),
+                    ClockSkew = TimeSpan.Zero
                 };
                 
             });
@@ -45,5 +46,7 @@ public static class ApplicationDependencies
         
         services.AddValidatorsFromAssembly(typeof(RegisterCommandValidator).Assembly);
 
+        services.AddHealthChecks()
+            .AddNpgSql(configuration.GetConnectionString("Postgres")!);
     }
 }

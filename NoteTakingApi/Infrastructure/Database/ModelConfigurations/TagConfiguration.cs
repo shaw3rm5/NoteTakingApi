@@ -22,10 +22,6 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
 
         builder.HasIndex(t => t.Name)
             .IsUnique();
-
-        builder
-            .HasIndex(t => t.Name)
-            .IsUnique();
         
         builder
             .HasMany(t => t.NoteTags)
