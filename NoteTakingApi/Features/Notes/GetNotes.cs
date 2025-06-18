@@ -38,7 +38,7 @@ public class GetNotes
 
             var notes = await query
                 .OrderByDescending(n => n.CreatedAt)
-                .ToListAsync(cancellationToken);
+                .ToArrayAsync(cancellationToken);
 
             var result = notes.Select(n => new ResponseNote(
                 n.Id,
@@ -47,7 +47,7 @@ public class GetNotes
                 n.NoteTags.Select(nt => nt.Tag.Name).ToList(),
                 n.CreatedAt,
                 n.UpdatedAt
-            )).ToList();
+            )).ToArray();
 
             return Results.Ok(result);
         }

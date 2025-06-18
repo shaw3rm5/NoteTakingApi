@@ -10,22 +10,30 @@ public class GetTags
     {
         public static void Map(WebApplication app)
         {
-            app.MapDelete("/notes/{id:int}", Handle)
+            app.MapGet("/tags", Handle)
                 .RequireAuthorization()
-                .WithTags("Notes");
+                .WithTags("Tags");
         }
         
         private static async Task<IResult> Handle(
-            int id,
             ClaimsPrincipal user,
             ApplicationDbContext dbContext,
             CancellationToken cancellationToken)
         {
             var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            
+            var existingUser = await dbContext.Users
+                .Where(u => u.Id == userId).
+                FirstOrDefaultAsync(cancellationToken);
+            if (existingUser is null)
+                return Results.Unauthorized();
 
-            var note = await dbContext.Tags.ToArrayAsync(cancellationToken);
-
-            return Results.NoContent();
+            var notes = await dbContext.Tags.ToArrayAsync(cancellationToken);
+                
+            return Results.Ok(new
+            {
+                notes
+            });
         }
     }
 }

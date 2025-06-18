@@ -25,7 +25,7 @@ public class Refresh
             IJwtService jwtService,
             CancellationToken cancellationToken)
         {
-            var userId = int.Parse(user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+            var userId = int.Parse(user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value!);
 
             var existingUser = await dbContext.Users.FindAsync([userId], cancellationToken);
             if (existingUser is null)

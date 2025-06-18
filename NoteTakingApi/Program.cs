@@ -1,6 +1,7 @@
 using Microsoft.OpenApi.Models;
 using NoteTakingApi.Features.Auth;
 using NoteTakingApi.Features.Notes;
+using NoteTakingApi.Features.Tags;
 using NoteTakingApi.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,5 +57,6 @@ GetNoteById.Endpoint.Map(app);
 GetNotes.Endpoint.Map(app);
 UpdateNote.Endpoint.Map(app);
 DeleteNote.Endpoint.Map(app);
+GetTags.Endpoint.Map(app);
 
 app.Run();
